@@ -1,0 +1,38 @@
+# 1.	Plotting the Spearson correlation matrix
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+import os
+import numpy as np
+import warnings
+warnings.filterwarnings("ignore")
+
+# Separate the column into a new DataFrame object
+var_dict = {}
+for column in df:
+    var_dict[column] = df[column]
+
+# Output the data of each variable
+for key, value in var_dict.items():
+    print(key, value.tolist())
+
+# Perform Spearman correlation analysis
+corr = df.corr(method='spearman')
+print(corr)
+
+# Plot the correlation coefficient heatmap
+ax = sns.heatmap(corr, square = True, annot=True, annot_kws={"fontsize":4},vmax = 1,vmin=-1,cmap="bwr",fmt='.2g')
+
+# Adjust the size of the color bar
+cbar = ax.collections[0].colorbar
+cbar.ax.tick_params(labelsize=8,labelfontfamily='Times New Roman')
+
+# Adjust the x-axis and y-axis
+plt.xticks(fontproperties='Times New Roman', fontsize=8, weight='bold')
+plt.yticks(fontproperties='Times New Roman', fontsize=8, weight='bold')
+plt.plot(dpi=600,figsize=(4,3))
+
+# Specify the image save path
+plt.savefig("HeatMap.tiff", dpi=330, bbox_inches='tight')
+plt.show()
