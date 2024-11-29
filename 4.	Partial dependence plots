@@ -1,0 +1,47 @@
+from sklearn.inspection import partial_dependence
+
+# 1-D Partial dependence plots
+shap.plots.partial_dependence(
+    "H", forest.predict, X_train,
+    ice=False,model_expected_value=False, feature_expected_value=False,
+    xmin='percentile(0)',xmax='percentile(100)',
+    npoints=None,feature_names=None,
+    hist=True,shap_values=None,
+    ylabel="C",
+    ace_opacity=1,
+    pd_opacity=1,
+    pd_linewidth=2,
+    ace_linewidth='auto',
+    ax=None, show=False)
+
+plt.tick_params(top=True,bottom=True,left=True,right=True) plt.ylabel(fontproperties='Arial', fontsize=15, fontweight='bold')
+plt.show()
+plt.savefig("PDP.tiff",dpi=330,bbox_inches='tight')
+
+# 2-D Partial dependence plots
+
+fig = plt.figure(figsize=(5.5, 5))
+
+features = ("C(wt%)", "H(wt%)")
+pdp = partial_dependence(
+    forest, X_train_1, features=features, kind="average", grid_resolution=10
+)
+XX, YY = np.meshgrid(pdp["grid_values"][0], pdp["grid_values"][1])
+Z = pdp.average[0].T
+ax = fig.add_subplot(projection="3d")
+fig.add_axes(ax)
+
+surf = ax.plot_surface(XX, YY, Z, rstride=1, cstride=1, cmap=plt.cm.YlGnBu, edgecolor="k")
+ax.set_xlabel(features[0], fontproperties='Arial', fontweight='bold',fontsize=10)
+plt.xticks(rotation=30)
+ax.set_ylabel(features[1], fontproperties='Arial', fontweight='bold',fontsize=10)
+plt.yticks(rotation=90)
+plt.tick_params(pad=0)
+
+ax.view_init(elev=22, azim=122)
+clb = plt.colorbar(surf, pad=0.2, shrink=0.6, aspect=10)
+clb.ax.set_title("Partial\ndependence", fontproperties='Arial', fontweight='bold',fontsize=12)
+
+plt.gca().invert_yaxis()
+plt.show()
+plt.savefig("2d pdp.tiff",dpi=330,bbox_inches='tight')
